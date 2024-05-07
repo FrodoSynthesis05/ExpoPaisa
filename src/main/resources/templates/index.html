@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .empty-list {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+  </head>
+  <body>
+      <header th:replace="layout/plantilla :: header"></header>
+        <br>
+        <a sec:authorize:"hasRole('ROLE_ADMIN')" th:href="@{/agregar}">Crear Persona </a>
+        
+        <div th:if="${personas != null and !personas.empty}">
+        <table border="1">
+            <tr>
+                <th>Nombre  </th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Direccion</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+            <tr th:each="persona : ${personas}">
+                 <td th:text="${persona.nombre}"> Mostrar Nombre</td>
+                 <td th:text="${persona.apellido}"> Apellido</td>
+                 <td th:text="${persona.email}"> mostrar email</td>
+                 <td th:text="${persona.telefono}"> mostrar Telefono</td>
+                 <td th:text="${persona.direccion}"> mostrar Direccion</td>
+                 <td> <a sec:authorize:"hasRole('ROLE_ADMIN')" th:href="@{/editar/} + ${persona.idPersona}" th:text="Editar"/> </td>
+                 <td> <a sec:authorize:"hasRole('ROLE_ADMIN')" th:href="@{/eliminar(idPersona=${persona.idPersona})}" th:text="Eliminar"/> </td>
+            </tr>
+            </table>
+            </div>
+            <div th:if="${personas == null or personas.empty}">
+                la lista de personas esta vacia
+            </div>
+        <br><br>
+          <form method="POST" th:action="@{/logout}">
+              <b>User:</b><span sec:authentication="name">Usuario que hizo a login</span> |
+              <b>Roles:</b> <span sec:authentication="principal.authorities"></span> |
+              <br>
+          <a href="#" onclick="this.parentNode.submit();"> Logout</a>
+          </form>
+        <footer th:replace="layout/plantilla :: footer"></footer>
+  </body>
+</html>
+
